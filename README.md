@@ -1,2 +1,0 @@
-# Tryitter-Project
-Trybe Project 
