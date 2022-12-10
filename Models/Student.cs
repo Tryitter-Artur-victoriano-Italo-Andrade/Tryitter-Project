@@ -1,7 +1,11 @@
-namespace TryitterProject.Models;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
-    public class Student : IStudant
+namespace Tryitter_Project.Models;
+
+    public class Student : IStudent
     {
+        [Key]
         public int StudentId { get; set; }
         public string? Name { get; set; }
         public string? Email { get; set; }

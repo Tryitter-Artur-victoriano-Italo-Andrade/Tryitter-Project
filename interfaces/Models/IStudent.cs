@@ -1,5 +1,5 @@
 
-public interface IStudant
+public interface IStudent
 {
     public int StudentId { get; set; }
     public string Name { get; set; }
