@@ -1,5 +1,5 @@
-namespace NameSpace.Models
-{
+namespace TryitterProject.Models;
+
     public class Student : IStudant
     {
         public int StudentId { get; set; }
@@ -9,4 +9,4 @@ namespace NameSpace.Models
         public string? Status { get; set; }
         public string? Password { get; set; }
     }
-}
+
