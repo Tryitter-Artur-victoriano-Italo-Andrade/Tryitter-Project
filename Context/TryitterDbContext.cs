@@ -18,17 +18,4 @@ public class TryitterDbContext : IdentityDbContext<IdentityUser>
   {
     base.OnModelCreating(builder);
   }
-
-  protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-  {
-    if (!optionsBuilder.IsConfigured)
-    {
-      optionsBuilder.UseSqlServer(@"
-                Server=localhost;
-                Database=Tryitter;
-                User=SA;
-                Password=0123456;
-            ");
-    }
-  }
 }

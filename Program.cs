@@ -10,10 +10,9 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddSqlServer<TryitterDbContext>(builder.Configuration["Database:SqlServer"]);
 builder.Services.AddIdentity<IdentityUser, IdentityRole>()
 .AddEntityFrameworkStores<TryitterDbContext>();
-
-builder.Services.AddSqlServer<TryitterDbContext>(builder.Configuration["Database:SqlServer"]);
 
 var app = builder.Build();
 
