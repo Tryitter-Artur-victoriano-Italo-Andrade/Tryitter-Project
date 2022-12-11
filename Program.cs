@@ -13,7 +13,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddIdentity<IdentityUser, IdentityRole>()
 .AddEntityFrameworkStores<TryitterDbContext>();
 
-string mySqlConnection = builder.Configuration.GetConnectionString("DefaultConnection");
+builder.Services.AddSqlServer<TryitterDbContext>(builder.Configuration["Database:SqlServer"]);
 
 var app = builder.Build();
 
