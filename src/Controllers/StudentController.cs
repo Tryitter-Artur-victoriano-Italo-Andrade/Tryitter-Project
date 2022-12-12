@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Tryitter_Project.Context;
 using Tryitter_Project.Models;
 
@@ -16,29 +17,73 @@ public class StudentController : ControllerBase
     _context.Database.EnsureCreated();
   }
 
-  [HttpGet("{id}", Name = "GetStudent")]
-  public ActionResult Get(string email)
+  [HttpGet]
+  public ActionResult Get()
   {
-    // if (!request.IsValid)
-    //   return BadRequest(request.Notifications);
 
-    var student = _context.Find(Student, email);
-    _context.Add(student);
-    _context.SaveChanges();
+    var students = _context.Users.ToList();
 
-    return CreatedAtRoute("", new { Id = student.Id }, student);
+    if (students is null)
+    {
+      return BadRequest("Não foi possível encontrar estudantes, tente novamente");
+    }
+
+    return Ok(students);
+  }
+
+  [HttpGet("{id}", Name = "GetStudent")]
+  public ActionResult Get([FromRoute] string id)
+  {
+    var student = _context.Users.Find(id);
+    return Ok(student);
   }
 
   [HttpPost]
-  public ActionResult Create(StudentRequest request)
+  public ActionResult Create([FromBody] StudentRequest request)
   {
     if (!request.IsValid)
       return BadRequest(request.Notifications);
+
+    var findStudent = _context.Users.FirstOrDefault(user => user.Email == request.Email);
+
+    if (findStudent is not null)
+      return BadRequest("Email existente");
 
     var student = request.CreateStudent();
     _context.Add(student);
     _context.SaveChanges();
 
-    return CreatedAtRoute("GetStudent", new { Id = student.Id }, student);
+    return CreatedAtRoute("GetStudent", new { student.Id }, student);
+  }
+
+  [HttpDelete("{id}")]
+  public ActionResult Delete([FromRoute] string id)
+  {
+    var student = _context.Users.FirstOrDefault(user => user.Id == id);
+
+    if (student is null)
+    {
+      return NotFound("Estudante não encontrado");
+    }
+
+    _context.Users.Remove(student);
+    _context.SaveChanges();
+
+    return NoContent();
+  }
+
+  [HttpPut("{id}")]
+  public ActionResult Put([FromRoute] string id, [FromBody] Student student)
+  {
+    if (id != student.Id)
+    {
+      return BadRequest("Id não representa o estudante");
+    }
+
+    _context.Entry(student).State = EntityState.Modified;
+    _context.SaveChanges();
+
+    return Ok(student);
   }
 }
+

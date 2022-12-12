@@ -5,7 +5,7 @@ namespace Tryitter_Project.Models;
 
 public class StudentRequest : Notifiable<Notification>
 {
-  public string UserName { get; set; }
+  public string Username { get; set; }
   public string Module { get; set; }
   public string Status { get; set; }
   public string Password { get; set; }
@@ -19,7 +19,7 @@ public class StudentRequest : Notifiable<Notification>
 
     AddNotifications(contract);
 
-    UserName = username;
+    Username = username;
     Email = email;
     Password = password;
     Module = module;
@@ -28,6 +28,6 @@ public class StudentRequest : Notifiable<Notification>
 
   public Student CreateStudent()
   {
-    return new Student(UserName, Email, Password, Module, Status);
+    return new Student(Username, Email, Password, Module, Status);
   }
 }
