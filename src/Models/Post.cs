@@ -8,11 +8,14 @@ namespace Tryitter_Project.Models;
     {
         [Key]
         public int PostId {get; set;}
+
         [Required(ErrorMessage = "Mensagem Obrigatória")]
         [MaxLength(300, ErrorMessage ="Mensagem deve conter até 300 caracteres")]
         public string? Messages { get; set; }
+
         [MaxLength(300)]
         public string? Image { get; set; }
+        
         [ForeignKey("StudentId")]
         [Required(ErrorMessage = "Id do estudante Obrigatório")]
         public int StudentId { get; set; }

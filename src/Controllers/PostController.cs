@@ -11,7 +11,7 @@ namespace Tryitter_Project.Controllers;
 [Route("[controller]")]
 public class PostController : ControllerBase
 {
-    private readonly TryitterDbContext _context;
+    private TryitterDbContext _context;
 
 
     public PostController (TryitterDbContext context)
@@ -19,7 +19,7 @@ public class PostController : ControllerBase
         _context = context;
     }
 
-    [HttpGet("{id:int}")]
+    [HttpGet("{id:int}", Name="PostsByStudentId")]
     public ActionResult<IEnumerable<Post>> GetPostsByStudentId(int id)
     {
         //var posts = _context.Posts.Include(x => x.StudentId).Where(x => x.StudentId == id).AsNoTracking().ToList(); 
@@ -31,7 +31,7 @@ public class PostController : ControllerBase
         return posts;
     }
 
-    [HttpGet("{id:int}")]
+    [HttpGet("{id:int}", Name= "LastPostsByStudentId")]
     public ActionResult<Post> GetLastPostByStudentId(int id)
     {
         var posts = _context.Posts.AsNoTracking().LastOrDefault(x => x.StudentId == id);
