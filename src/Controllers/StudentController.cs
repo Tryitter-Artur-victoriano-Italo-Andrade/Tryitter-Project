@@ -1,7 +1,10 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Tryitter_Project.Context;
 using Tryitter_Project.Models;
+using Tryitter_Project.Auth;
+
 
 namespace Tryitter_Project.Controllers;
 
@@ -18,10 +21,12 @@ public class StudentController : ControllerBase
   }
 
   [HttpGet]
+  [Authorize]
   public ActionResult Get()
   {
 
-    var students = _context.Users.ToList();
+
+    var students = _context.Student.ToList();
 
     if (students is null)
     {
@@ -32,50 +37,51 @@ public class StudentController : ControllerBase
   }
 
   [HttpGet("{id}", Name = "GetStudent")]
-  public ActionResult Get([FromRoute] string id)
+  [Authorize(Policy = "student")]
+  public ActionResult Get(int id)
   {
-    var student = _context.Users.Find(id);
+    var student = _context.Student.FirstOrDefault(x => x.StudentId == id);
+
     return Ok(student);
   }
 
   [HttpPost]
-  public ActionResult Create([FromBody] StudentRequest request)
+  public ActionResult Create([FromBody] Student student)
   {
-    if (!request.IsValid)
-      return BadRequest(request.Notifications);
 
-    var findStudent = _context.Users.FirstOrDefault(user => user.Email == request.Email);
+    var findStudent = _context.Student.FirstOrDefault(user => user.Email == student.Email);
 
     if (findStudent is not null)
       return BadRequest("Email existente");
 
-    var student = request.CreateStudent();
     _context.Add(student);
     _context.SaveChanges();
-
-    return CreatedAtRoute("GetStudent", new { student.Id }, student);
+    var token = new TokenGenerator().Generate(student);
+    return new CreatedAtRouteResult("GetStudent", new { id = student.StudentId }, new { token, student });
   }
 
   [HttpDelete("{id}")]
-  public ActionResult Delete([FromRoute] string id)
+  [Authorize(Policy = "student")]
+  public ActionResult Delete([FromRoute] int id)
   {
-    var student = _context.Users.FirstOrDefault(user => user.Id == id);
+    var student = _context.Student.FirstOrDefault(student => student.StudentId == id);
 
     if (student is null)
     {
       return NotFound("Estudante não encontrado");
     }
 
-    _context.Users.Remove(student);
+    _context.Student.Remove(student);
     _context.SaveChanges();
 
     return NoContent();
   }
 
   [HttpPut("{id}")]
-  public ActionResult Put([FromRoute] string id, [FromBody] Student student)
+  [Authorize(Policy = "student")]
+  public ActionResult Put([FromRoute] int id, [FromBody] Student student)
   {
-    if (id != student.Id)
+    if (id != student.StudentId)
     {
       return BadRequest("Id não representa o estudante");
     }

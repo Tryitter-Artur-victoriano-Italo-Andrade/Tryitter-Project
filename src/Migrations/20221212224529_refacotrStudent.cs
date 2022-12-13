@@ -5,7 +5,7 @@
 namespace TryitterProject.Migrations
 {
     /// <inheritdoc />
-    public partial class StudentRequest : Migration
+    public partial class refacotrStudent : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

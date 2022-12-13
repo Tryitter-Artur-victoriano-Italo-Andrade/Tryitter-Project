@@ -6,23 +6,32 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Auth.Constants;
 
-namespace LifeBankAuth.Services;
+namespace Tryitter_Project.Auth;
 
-    public class TokenGenerator
+public class TokenGenerator
+{
+
+  public string Generate(Student student)
+  {
+    var tokenHandler = new JwtSecurityTokenHandler();
+    var tokenDescriptor = new SecurityTokenDescriptor()
     {
+      Subject = AddClaims(student),
 
-        public string Generate(Student student)
-        {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var tokenDescriptor = new SecurityTokenDescriptor()
-            {
-                SigningCredentials = new SigningCredentials(
-                    new SymmetricSecurityKey(Encoding.ASCII.GetBytes(TokenConstants.Secret)),
-                    SecurityAlgorithms.HmacSha256Signature
-                ),
-                Expires = DateTime.Now.AddDays(1)
-            };
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            return tokenHandler.WriteToken(token);
-        }
-    }
+      SigningCredentials = new SigningCredentials(
+            new SymmetricSecurityKey(Encoding.ASCII.GetBytes(TokenConstants.Secret)),
+            SecurityAlgorithms.HmacSha256Signature
+        ),
+      Expires = DateTime.Now.AddDays(1)
+    };
+    var token = tokenHandler.CreateToken(tokenDescriptor);
+    return tokenHandler.WriteToken(token);
+  }
+  private ClaimsIdentity AddClaims(Student student)
+  {
+    ClaimsIdentity identityStudent = new();
+    identityStudent.AddClaim(new Claim("StudentId", student.StudentId.ToString()));
+
+    return identityStudent;
+  }
+}

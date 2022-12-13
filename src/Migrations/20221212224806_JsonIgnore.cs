@@ -5,7 +5,7 @@
 namespace TryitterProject.Migrations
 {
     /// <inheritdoc />
-    public partial class AddIdentityuser : Migration
+    public partial class JsonIgnore : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

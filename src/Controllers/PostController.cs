@@ -11,80 +11,80 @@ namespace Tryitter_Project.Controllers;
 [Route("[controller]")]
 public class PostController : ControllerBase
 {
-    private TryitterDbContext _context;
+  private TryitterDbContext _context;
 
 
-    public PostController (TryitterDbContext context)
+  public PostController(TryitterDbContext context)
+  {
+    _context = context;
+  }
+
+  [HttpGet("PostsByStudentId/{id}", Name = "PostsByStudentId")]
+  public ActionResult<IEnumerable<Post>> GetPostsByStudentId(int id)
+  {
+    //var posts = _context.Posts.Include(x => x.StudentId).Where(x => x.StudentId == id).AsNoTracking().ToList(); 
+    var posts = _context.Posts.Where(x => x.StudentId == id).AsNoTracking().ToList();
+    if (posts is null)
     {
-        _context = context;
+      return NotFound("Nenhum Post Encontrado");
     }
+    return Ok(posts);
+  }
 
-    [HttpGet("{id:int}", Name="PostsByStudentId")]
-    public ActionResult<IEnumerable<Post>> GetPostsByStudentId(int id)
+  [HttpGet("LastPostsByStudentId/{id}", Name = "LastPostsByStudentId")]
+  public ActionResult<Post> GetLastPostByStudentId(int id)
+  {
+    var posts = _context.Posts.AsNoTracking().LastOrDefault(x => x.StudentId == id);
+    if (posts is null)
     {
-        //var posts = _context.Posts.Include(x => x.StudentId).Where(x => x.StudentId == id).AsNoTracking().ToList(); 
-        var posts = _context.Posts.Where(x => x.StudentId == id).AsNoTracking().ToList();
-        if (posts is null)
-        {
-            return NotFound("Nenhum Post Encontrado");
-        }
-        return posts;
+      return NotFound("Nenhum Post Encontrado");
     }
+    return Ok(posts);
+  }
 
-    [HttpGet("{id:int}", Name= "LastPostsByStudentId")]
-    public ActionResult<Post> GetLastPostByStudentId(int id)
+  [HttpGet("PostById/{id}", Name = "PostById")]
+  public ActionResult<Post> Get(int id)
+  {
+    var posts = _context.Posts.AsNoTracking().FirstOrDefault(post => post.PostId == id);
+    if (posts is null)
     {
-        var posts = _context.Posts.AsNoTracking().LastOrDefault(x => x.StudentId == id);
-        if (posts is null)
-        {
-            return NotFound("Nenhum Post Encontrado");
-        }
-        return posts;
+      return NotFound("Post não Encontrado");
     }
+    return Ok(posts);
+  }
 
-    [HttpGet("{id:int}", Name="PostById")]
-    public ActionResult<Post> Get(int id)
+  [HttpPost]
+  public ActionResult Post(Post post)
+  {
+    if (post is null) return BadRequest();
+    _context.Posts.Add(post);
+    _context.SaveChanges();
+
+    return new CreatedAtRouteResult("PostById", new { id = post.PostId }, post);
+  }
+
+  [HttpPut("{id:int}")]
+  public ActionResult Put(int id, Post post)
+  {
+    if (id != post.PostId) return BadRequest();
+
+    _context.Entry(post).State = EntityState.Modified;
+    _context.SaveChanges();
+    return Ok(post);
+  }
+
+  [HttpDelete("{id:int}")]
+  public ActionResult Delete(int id)
+  {
+    var post = _context.Posts.FirstOrDefault(post => post.PostId == id);
+    if (post is null)
     {
-        var posts = _context.Posts.AsNoTracking().FirstOrDefault(post => post.PostId == id);
-        if(posts is null)
-        {
-            return NotFound("Post não Encontrado");
-        }
-        return posts;
+      return NotFound("Post não Encontrado");
     }
+    _context.Posts.Remove(post);
+    _context.SaveChanges();
 
-    [HttpPost]
-    public ActionResult Post(Post post)
-    {
-        if (post is null) return BadRequest();
-        _context.Posts.Add(post);
-        _context.SaveChanges();
+    return Ok(post);
+  }
 
-        return new CreatedAtRouteResult("PostById", new { id = post.PostId }, post);
-    }
-
-    [HttpPut("{id:int}")]
-    public ActionResult Put(int id, Post post)
-    {
-        if ( id != post.PostId) return BadRequest();
-
-        _context.Entry(post).State = EntityState.Modified;
-        _context.SaveChanges();
-        return Ok(post);
-    }
-
-    [HttpDelete("{id:int}")]
-    public ActionResult Delete(int id)
-    {
-        var post = _context.Posts.FirstOrDefault(post => post.PostId == id);
-        if (post is null)
-        {
-            return NotFound("Post não Encontrado");
-        }
-        _context.Posts.Remove(post);
-        _context.SaveChanges();
-
-        return Ok(post); 
-    }
-
-} 
+}
