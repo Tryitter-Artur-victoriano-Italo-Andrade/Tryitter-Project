@@ -5,7 +5,7 @@ using Tryitter_Project.Models;
 
 namespace Tryitter_Project.Context;
 
-public class TryitterDbContext : IdentityDbContext<IdentityUser>
+public class TryitterDbContext : DbContext
 {
   public TryitterDbContext(DbContextOptions<TryitterDbContext> options) : base(options)
   { }

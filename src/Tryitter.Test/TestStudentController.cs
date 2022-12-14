@@ -1,53 +1,55 @@
 using Tryitter_Project.Models;
 using Tryitter_Project.Services;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using System.Net.Http.Headers;
 using Microsoft.VisualStudio.TestPlatform.TestHost;
-using Tryitter_Project.Context;
-using Microsoft.EntityFrameworkCore;
+using System.Net.Http.Json;
+using Xunit;
+using FluentAssertions;
+using System;
+using System.Threading.Tasks;
 
-namespace LifeBankAuth.Test;
+namespace Tryitter_Project.Test;
+
 
 public class TestStudentController : IClassFixture<WebApplicationFactory<Program>>
+
 {
   private readonly WebApplicationFactory<Program> _factory;
-  public TestStudentController(WebApplicationFactory<Program> factory)
-  {
-    _factory = factory;
-  }
+
+  public TestStudentController(WebApplicationFactory<Program> factory) => _factory = factory;
 
   [Trait("Category", "3 - Criar Endpoint Autorização")]
   [Theory(DisplayName = "Teste para PlataformWelcome com Status Ok")]
-  [InlineData("Italo Andrade", "Data science", "Estudante", "123456", "italo@xpi.com")]
+  // [InlineData("Italo Andrade", "Data science", "Estudante", "123456", "italo@xpi.com")]
   [InlineData("Arthur Victoriano", "Backend", "Estudante", "123456", "arthur@xpi.com")]
 
-  public async Task TestGetAll(string userName, string module, string status, string password, string email)
+  public async Task TestGetAll(string name, string module, string status, string password, string email)
   {
+    var student = _factory.CreateClient();
     TokenGenerator instanceToken = new();
     Student instanceStudent = new()
     {
-      UserName = userName,
+      UserName = name,
       Password = password,
       Status = status,
       Module = module,
       Email = email
     };
 
-    var _dbSet = new Mock<DbSet<Student>>();
+    var token = instanceToken.Generate(instanceStudent);
 
+    // student.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-    var mockMethod = new Mock<TryitterDbContext>();
-    mockMethod.Setup(x => x.Student).Returns(_dbSet.Object);
+    // await student.PostAsJsonAsync("Student", instanceStudent);
 
-    // var token = instanceToken.Generate(instanceStudent);
-    // HttpClient Student = _factory.CreateClient();
+    var res = await student.GetAsync("/Student/");
+    // await res.Content.ReadAsStringAsync();
 
-    // Student.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
-    // HttpResponseMessage res = await Student.GetAsync("Student/");
-
-    // res.StatusCode.Should().Be(HttpStatusCode.OK);
+    res.StatusCode.Should().Be(HttpStatusCode.OK);
+    // res.Contains(instanceStudent.Email).Should().BeTrue();
   }
 
   //   [Trait("Category", "3 - Criar Endpoint Autorização")]
