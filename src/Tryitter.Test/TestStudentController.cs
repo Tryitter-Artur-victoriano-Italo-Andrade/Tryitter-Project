@@ -1,118 +1,126 @@
-// using LifeBankAuth.Models;
-// using LifeBankAuth.Services;
-// using Microsoft.AspNetCore.Mvc.Testing;
-// using System.Net;
-// using System.Net.Http.Headers;
+using Tryitter_Project.Models;
+using Tryitter_Project.Services;
+using Microsoft.AspNetCore.Mvc.Testing;
+using System.Net;
+using System.Net.Http.Headers;
+using Microsoft.VisualStudio.TestPlatform.TestHost;
+using Tryitter_Project.Context;
+using Microsoft.EntityFrameworkCore;
 
-// namespace LifeBankAuth.Test;
+namespace LifeBankAuth.Test;
 
-// public class TestClientController : IClassFixture<WebApplicationFactory<Program>>
-// {
-//   private readonly WebApplicationFactory<Program> _factory;
-//   private const string controllerName = "client";
+public class TestStudentController : IClassFixture<WebApplicationFactory<Program>>
+{
+  private readonly WebApplicationFactory<Program> _factory;
+  public TestStudentController(WebApplicationFactory<Program> factory)
+  {
+    _factory = factory;
+  }
 
-//   public TestClientController(WebApplicationFactory<Program> factory)
-//   {
-//     _factory = factory;
-//   }
+  [Trait("Category", "3 - Criar Endpoint Autorização")]
+  [Theory(DisplayName = "Teste para PlataformWelcome com Status Ok")]
+  [InlineData("Italo Andrade", "Data science", "Estudante", "123456", "italo@xpi.com")]
+  [InlineData("Arthur Victoriano", "Backend", "Estudante", "123456", "arthur@xpi.com")]
 
-//   [Trait("Category", "3 - Criar Endpoint Autorização")]
-//   [Theory(DisplayName = "Teste para PlataformWelcome com Status Ok")]
-//   [InlineData("Mayara", false, CurrencyEnum.Real)]
-//   [InlineData("Luiz", false, CurrencyEnum.Euro)]
-//   [InlineData("Patricia", false, CurrencyEnum.Peso)]
-//   [InlineData("Ricardo", false, CurrencyEnum.Dolar)]
-//   [InlineData("Trybe", true, CurrencyEnum.Real)]
-//   public async Task TestPlataformWelcomeSuccess(string name, bool isCompany, CurrencyEnum currency)
-//   {
-//     Client client = new()
-//     {
-//       Name = name,
-//       IsCompany = isCompany,
-//       Currency = currency
-//     };
+  public async Task TestGetAll(string userName, string module, string status, string password, string email)
+  {
+    TokenGenerator instanceToken = new();
+    Student instanceStudent = new()
+    {
+      UserName = userName,
+      Password = password,
+      Status = status,
+      Module = module,
+      Email = email
+    };
 
-//     var token = new TokenGenerator().Generate(client);
-//     HttpClient Client = _factory.CreateClient();
+    var _dbSet = new Mock<DbSet<Student>>();
 
-//     Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-//     HttpResponseMessage res = await Client.GetAsync("Client/PlataformWelcome");
+    var mockMethod = new Mock<TryitterDbContext>();
+    mockMethod.Setup(x => x.Student).Returns(_dbSet.Object);
 
-//     res.StatusCode.Should().Be(HttpStatusCode.OK);
-//   }
+    // var token = instanceToken.Generate(instanceStudent);
+    // HttpClient Student = _factory.CreateClient();
 
-//   [Trait("Category", "3 - Criar Endpoint Autorização")]
-//   [Theory(DisplayName = "Teste para PlataformWelcome com Status Unauthorized")]
-//   [InlineData("123456789")]
-//   [InlineData("Teste123456")]
-//   [InlineData("INVALIDTOKEN")]
+    // Student.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-//   public async Task TestPlataformWelcomeFail(string invalidToken)
-//   {
-//     var Client = _factory.CreateClient();
+    // HttpResponseMessage res = await Student.GetAsync("Student/");
 
-//     Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", invalidToken);
-//     HttpResponseMessage res = await Client.GetAsync("Client/PlataformWelcome");
+    // res.StatusCode.Should().Be(HttpStatusCode.OK);
+  }
 
-//     res.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
-//   }
-// }
-// public class TestClientController2 : IClassFixture<WebApplicationFactory<Program>>
-// {
-//   private readonly WebApplicationFactory<Program> _factory;
-//   private const string controllerName = "client";
+  //   [Trait("Category", "3 - Criar Endpoint Autorização")]
+  //   [Theory(DisplayName = "Teste para PlataformWelcome com Status Unauthorized")]
+  //   [InlineData("123456789")]
+  //   [InlineData("Teste123456")]
+  //   [InlineData("INVALIDTOKEN")]
 
-//   public TestClientController2(WebApplicationFactory<Program> factory)
-//   {
-//     _factory = factory;
-//   }
+  //   public async Task TestPlataformWelcomeFail(string invalidToken)
+  //   {
+  //     var Student = _factory.CreateStudent();
 
-//   [Trait("Category", "4 - Criar Endpoint com Autorização baseada em Claims")]
-//   [Theory(DisplayName = "Teste para NewPromoAlert com Status Ok")]
-//   [InlineData("Mayara", false, CurrencyEnum.Real)]
-//   [InlineData("Patricia", false, CurrencyEnum.Peso)]
-//   [InlineData("Geni", false, CurrencyEnum.Real)]
-//   [InlineData("Helena", false, CurrencyEnum.Peso)]
-//   public async Task TestNewPromoAlertSuccess(string name, bool isCompany, CurrencyEnum currency)
-//   {
-//     Client client = new()
-//     {
-//       Name = name,
-//       IsCompany = isCompany,
-//       Currency = currency
-//     };
+  //     Student.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", invalidToken);
+  //     HttpResponseMessage res = await Student.GetAsync("Student/PlataformWelcome");
 
-//     var token = new TokenGenerator().Generate(client);
-//     HttpClient Client = _factory.CreateClient();
+  //     res.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+  //   }
+  // }
+  // public class TestStudentController2 : IClassFixture<WebApplicationFactory<Program>>
+  // {
+  //   private readonly WebApplicationFactory<Program> _factory;
+  //   private const string controllerName = "Student";
 
-//     Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-//     HttpResponseMessage res = await Client.GetAsync("/Client/NewPromoAlert");
+  //   public TestStudentController2(WebApplicationFactory<Program> factory)
+  //   {
+  //     _factory = factory;
+  //   }
 
-//     res.StatusCode.Should().Be(HttpStatusCode.OK);
-//   }
+  //   [Trait("Category", "4 - Criar Endpoint com Autorização baseada em Claims")]
+  //   [Theory(DisplayName = "Teste para NewPromoAlert com Status Ok")]
+  //   [InlineData("Mayara", false, CurrencyEnum.Real)]
+  //   [InlineData("Patricia", false, CurrencyEnum.Peso)]
+  //   [InlineData("Geni", false, CurrencyEnum.Real)]
+  //   [InlineData("Helena", false, CurrencyEnum.Peso)]
+  //   public async Task TestNewPromoAlertSuccess(string name, bool isCompany, CurrencyEnum currency)
+  //   {
+  //     Student Student = new()
+  //     {
+  //       Name = name,
+  //       IsCompany = isCompany,
+  //       Currency = currency
+  //     };
 
-//   [Trait("Category", "4 - Criar Endpoint com Autorização baseada em Claims")]
-//   [Theory(DisplayName = "Teste para NewPromoAlert com Status Forbidden")]
-//   [InlineData("Luiz", false, CurrencyEnum.Euro)]
-//   [InlineData("Ricardo", false, CurrencyEnum.Dolar)]
-//   [InlineData("Trybe", true, CurrencyEnum.Real)]
-//   [InlineData("Paula", true, CurrencyEnum.Dolar)]
-//   public async Task TestNewPromoAlertFail(string name, bool isCompany, CurrencyEnum currency)
-//   {
-//     Client client = new()
-//     {
-//       Name = name,
-//       IsCompany = isCompany,
-//       Currency = currency
-//     };
+  //     var token = new TokenGenerator().Generate(Student);
+  //     HttpStudent Student = _factory.CreateStudent();
 
-//     var token = new TokenGenerator().Generate(client);
-//     HttpClient Client = _factory.CreateClient();
+  //     Student.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+  //     HttpResponseMessage res = await Student.GetAsync("/Student/NewPromoAlert");
 
-//     Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-//     HttpResponseMessage res = await Client.GetAsync("/Client/NewPromoAlert");
+  //     res.StatusCode.Should().Be(HttpStatusCode.OK);
+  //   }
 
-//     res.StatusCode.Should().Be(HttpStatusCode.Forbidden);
-//   }
-// }
+  //   [Trait("Category", "4 - Criar Endpoint com Autorização baseada em Claims")]
+  //   [Theory(DisplayName = "Teste para NewPromoAlert com Status Forbidden")]
+  //   [InlineData("Luiz", false, CurrencyEnum.Euro)]
+  //   [InlineData("Ricardo", false, CurrencyEnum.Dolar)]
+  //   [InlineData("Trybe", true, CurrencyEnum.Real)]
+  //   [InlineData("Paula", true, CurrencyEnum.Dolar)]
+  //   public async Task TestNewPromoAlertFail(string name, bool isCompany, CurrencyEnum currency)
+  //   {
+  //     Student Student = new()
+  //     {
+  //       Name = name,
+  //       IsCompany = isCompany,
+  //       Currency = currency
+  //     };
+
+  //     var token = new TokenGenerator().Generate(Student);
+  //     HttpStudent Student = _factory.CreateStudent();
+
+  //     Student.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+  //     HttpResponseMessage res = await Student.GetAsync("/Student/NewPromoAlert");
+
+  //     res.StatusCode.Should().Be(HttpStatusCode.Forbidden);
+  //   }
+}
