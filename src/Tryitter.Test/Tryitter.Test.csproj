@@ -25,7 +25,7 @@
   </ItemGroup>
   
   <ItemGroup>
-    <ProjectReference Include="..\Tryitter_project\Tryitter_project.csproj" />
+    <ProjectReference Include="..\Tryitter\Tryitter-Project.csproj" />
   </ItemGroup>
 
 </Project>

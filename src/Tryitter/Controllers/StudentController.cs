@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Tryitter_Project.Context;
 using Tryitter_Project.Models;
-using Tryitter_Project.Auth;
+using Tryitter_Project.Services;
 
 
 namespace Tryitter_Project.Controllers;

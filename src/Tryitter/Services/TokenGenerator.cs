@@ -6,7 +6,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Auth.Constants;
 
-namespace Tryitter_Project.Auth;
+namespace Tryitter_Project.Services;
 
 public class TokenGenerator
 {

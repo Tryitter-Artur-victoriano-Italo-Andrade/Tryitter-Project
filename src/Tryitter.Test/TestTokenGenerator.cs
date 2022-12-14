@@ -1,45 +1,43 @@
-using LifeBankAuth.Models;
-using LifeBankAuth.Services;
+using Tryitter_Project.Models;
+using Tryitter_Project.Services;
 
-namespace LifeBankAuth.Test;
+namespace Tryitter_Project.Test;
 
 public class TestTokenGenerator
 {
-  /// <summary>
-  /// Test function that validates if Token is being generated, if it is not returning null or empty
-  /// </summary>
   [Theory(DisplayName = "Teste para TokenGenerator em que token não é nulo")]
-  [InlineData("Mayara", false, CurrencyEnum.Real)]
-  public void TestTokenGeneratorSuccess(string name, bool isCompany, CurrencyEnum currency)
+  [InlineData("Italo Andrade", "Data science", "Estudante", "123456", "italo@xpi.com")]
+  public void TestTokenGeneratorSuccess(string name, string module, string status, string password, string email)
   {
     TokenGenerator instanceToken = new();
-    Client instanceClient = new()
+    Student instanceStudent = new()
     {
-      Name = name,
-      IsCompany = isCompany,
-      Currency = currency
+      UserName = name,
+      Password = password,
+      Status = status,
+      Module = module,
+      Email = email
     };
 
-    var token = instanceToken.Generate(instanceClient);
+    var token = instanceToken.Generate(instanceStudent);
     token.Should().NotBeNullOrEmpty();
   }
 
-  /// <summary>
-  /// Test function that validates if Token is being generated according to JWT methodology, having 3 keys.
-  /// </summary>
   [Theory(DisplayName = "Teste para TokenGenerator em que token JWT possui 3 partes")]
-  [InlineData("Mayara", false, CurrencyEnum.Real)]
-  public void TestTokenGeneratorKeysSuccess(string name, bool isCompany, CurrencyEnum currency)
+  [InlineData("Arthur Victoriano", "Backend", "Estudante", "123456", "arthur@xpi.com")]
+  public void TestTokenGeneratorKeysSuccess(string name, string module, string status, string password, string email)
   {
     TokenGenerator instanceToken = new();
-    Client instanceClient = new()
+    Student instanceStudent = new()
     {
-      Name = name,
-      IsCompany = isCompany,
-      Currency = currency
+      UserName = name,
+      Password = password,
+      Status = status,
+      Module = module,
+      Email = email
     };
 
-    var token = instanceToken.Generate(instanceClient);
+    var token = instanceToken.Generate(instanceStudent);
 
     token.Split('.').Should().HaveCount(3);
   }
