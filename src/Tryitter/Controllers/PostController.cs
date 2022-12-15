@@ -1,9 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Tryitter_Project.Models;
 using System.Collections.Generic;
-using Tryitter_Project.Context;
+//using Tryitter_Project.Context;
 using System;
-using Microsoft.EntityFrameworkCore;
+//using Microsoft.EntityFrameworkCore;
+using Tryitter_Project.Repository;
 
 namespace Tryitter_Project.Controllers;
 
@@ -11,80 +12,73 @@ namespace Tryitter_Project.Controllers;
 [Route("[controller]")]
 public class PostController : ControllerBase
 {
-  private TryitterDbContext _context;
+    private IPostRepository _repository;
 
 
-  public PostController(TryitterDbContext context)
-  {
-    _context = context;
-  }
-
-  [HttpGet("PostsByStudentId/{id}", Name = "PostsByStudentId")]
-  public ActionResult<IEnumerable<Post>> GetPostsByStudentId(int id)
-  {
-    //var posts = _context.Posts.Include(x => x.StudentId).Where(x => x.StudentId == id).AsNoTracking().ToList(); 
-    var posts = _context.Posts.Where(x => x.StudentId == id).AsNoTracking().ToList();
-    if (posts is null)
+    public PostController(IPostRepository repository)
     {
-      return NotFound("Nenhum Post Encontrado");
+        _repository = repository;
     }
-    return Ok(posts);
-  }
 
-  [HttpGet("LastPostsByStudentId/{id}", Name = "LastPostsByStudentId")]
-  public ActionResult<Post> GetLastPostByStudentId(int id)
-  {
-    var posts = _context.Posts.AsNoTracking().LastOrDefault(x => x.StudentId == id);
-    if (posts is null)
+    [HttpGet("PostsByStudentId/{id}", Name = "PostsByStudentId")]
+    public ActionResult<IEnumerable<Post>> GetPostsByStudentId(int id)
     {
-      return NotFound("Nenhum Post Encontrado");
+        var posts = _repository.PostsByStudentId(id);
+        if (posts is null)
+        {
+            return NotFound("Nenhum Post Encontrado");
+        }
+        return Ok(posts);
     }
-    return Ok(posts);
-  }
 
-  [HttpGet("PostById/{id}", Name = "PostById")]
-  public ActionResult<Post> Get(int id)
-  {
-    var posts = _context.Posts.AsNoTracking().FirstOrDefault(post => post.PostId == id);
-    if (posts is null)
+    [HttpGet("LastPostsByStudentId/{id}", Name = "LastPostsByStudentId")]
+    public ActionResult<Post> GetLastPostByStudentId(int id)
     {
-      return NotFound("Post não Encontrado");
+        var posts = _repository.LastPostsByStudentId(id);
+        if (posts is null)
+        {
+            return NotFound("Nenhum Post Encontrado");
+        }
+        return Ok(posts);
     }
-    return Ok(posts);
-  }
 
-  [HttpPost]
-  public ActionResult Post(Post post)
-  {
-    if (post is null) return BadRequest();
-    _context.Posts.Add(post);
-    _context.SaveChanges();
-
-    return new CreatedAtRouteResult("PostById", new { id = post.PostId }, post);
-  }
-
-  [HttpPut("{id:int}")]
-  public ActionResult Put(int id, Post post)
-  {
-    if (id != post.PostId) return BadRequest();
-
-    _context.Entry(post).State = EntityState.Modified;
-    _context.SaveChanges();
-    return Ok(post);
-  }
-
-  [HttpDelete("{id:int}")]
-  public ActionResult Delete(int id)
-  {
-    var post = _context.Posts.FirstOrDefault(post => post.PostId == id);
-    if (post is null)
+    [HttpGet("PostById/{id}", Name = "PostById")]
+    public ActionResult<Post> Get(int id)
     {
-      return NotFound("Post não Encontrado");
+        var posts = _repository.GetPostById(id);
+        if (posts is null)
+        {
+            return NotFound("Post não Encontrado");
+        }
+        return Ok(posts);
     }
-    _context.Posts.Remove(post);
-    _context.SaveChanges();
 
-    return Ok(post);
-  }
+    [HttpPost]
+    public ActionResult Post(Post post)
+    {
+        if (post is null) return BadRequest();
+        _repository.PostMessage(post);
+        return new CreatedAtRouteResult("PostById", new { id = post.PostId }, post);
+    }
+
+    [HttpPut("{id:int}")]
+    public ActionResult Put(int id, Post post)
+    {
+        if (id != post.PostId) return BadRequest();
+        _repository.PutMessage(post);
+        return Ok(post);
+    }
+
+    [HttpDelete("{id:int}")]
+    public ActionResult Delete(int id)
+    {
+        Post? post = _repository.GetPostById(id);
+        if (post is null)
+        {
+            return NotFound("Post não Encontrado");
+        }
+        _repository.DeleteMessage(post);
+        return Ok(post);
+    }
 
 }
