@@ -21,7 +21,7 @@ public class StudentController : ControllerBase
   }
 
   [HttpGet]
-  [Authorize]
+  // [Authorize]
   public ActionResult Get()
   {
 
