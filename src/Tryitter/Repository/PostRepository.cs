@@ -16,13 +16,13 @@ public class PostRepository : IPostRepository
 
     public List<Post?> PostsByStudentId(int id)
     {
-        var posts = _context.Posts.Include(x => x.StudentId).Where(x => x.StudentId == id).AsNoTracking().ToList();
+        var posts = _context.Posts.Where(x => x.StudentId == id).AsNoTracking().ToList();
         return posts;
     }
 
     public Post? LastPostsByStudentId(int id)
     {
-        var posts = _context.Posts.AsNoTracking().LastOrDefault(x => x.StudentId == id);
+        var posts = _context.Posts.Where(x => x.StudentId == id).OrderBy(x => x.PostId).LastOrDefault();
         return posts;
     }
     public Post? GetPostById(int id)
