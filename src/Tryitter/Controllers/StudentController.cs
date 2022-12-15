@@ -21,7 +21,7 @@ public class StudentController : ControllerBase
   }
 
   [HttpGet]
-  // [Authorize]
+  [Authorize]
   public ActionResult Get()
   {
 
@@ -49,10 +49,10 @@ public class StudentController : ControllerBase
   public ActionResult Create([FromBody] Student student)
   {
 
-    var findStudent = _context.Student.FirstOrDefault(user => user.Email == student.Email);
+    // var findStudent = _context.Student.FirstOrDefault(user => user.Email == student.Email);
 
-    if (findStudent is not null)
-      return BadRequest("Email existente");
+    // if (findStudent is not null)
+    //   return BadRequest("Email existente");
 
     _context.Add(student);
     _context.SaveChanges();
