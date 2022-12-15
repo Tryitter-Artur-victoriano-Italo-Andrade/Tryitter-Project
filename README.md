@@ -52,4 +52,7 @@ Nessa rede social, as pessoas estudantes conseguem se cadastrar com nome, e-mail
 Uma pessoa pode também publicar posts em seu perfil, que poderão conter texto com até 300 caracteres e arquivos de imagem, além de conseguir pesquisar outras contas por nome e optar por listar todos seus posts ou apenas o último.
 
 
+[Gravação de tela de 15-12-2022 00:26:21.webm](https://user-images.githubusercontent.com/53881677/207766210-2fc5470e-e6f6-4ea2-9b04-766ca69e9cec.webm)
+
+
 Boa sorte e divirta-se!
