@@ -42,18 +42,17 @@ public class StudentController : ControllerBase
   {
     var student = _context.Student.FirstOrDefault(x => x.StudentId == id);
 
+    if (student is null)
+    {
+      return NotFound("Estudante não encontrado");
+    }
+
     return Ok(student);
   }
 
   [HttpPost]
   public ActionResult Create([FromBody] Student student)
   {
-
-    // var findStudent = _context.Student.FirstOrDefault(user => user.Email == student.Email);
-
-    // if (findStudent is not null)
-    //   return BadRequest("Email existente");
-
     _context.Add(student);
     _context.SaveChanges();
     var token = new TokenGenerator().Generate(student);

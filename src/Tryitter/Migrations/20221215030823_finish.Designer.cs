@@ -11,8 +11,8 @@ using Tryitter_Project.Context;
 namespace TryitterProject.Migrations
 {
     [DbContext(typeof(TryitterDbContext))]
-    [Migration("20221215000804_teste")]
-    partial class teste
+    [Migration("20221215030823_finish")]
+    partial class finish
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
